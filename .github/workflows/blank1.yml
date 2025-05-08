@@ -5,17 +5,18 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   unzip:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Unzip uploaded ZIP
+      - name: Unzip and push
         run: |
           unzip "MedLinguaAI (1).zip" -d extracted
           rm "MedLinguaAI (1).zip"
@@ -23,5 +24,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "Unzipped and extracted files"
+          git commit -m "Extracted and pushed"
           git push
