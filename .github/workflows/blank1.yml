@@ -1,0 +1,27 @@
+name: Unzip and Commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Unzip uploaded ZIP
+        run: |
+          unzip "MedLinguaAI (1).zip" -d extracted
+          rm "MedLinguaAI (1).zip"
+          mv extracted/* ./
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Unzipped and extracted files"
+          git push
