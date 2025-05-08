@@ -1,0 +1,34 @@
+name: Unzip and Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Unzip and clean
+        run: |
+          unzip "MedLinguaAI (1).zip" -d extracted-files
+          rm -rf "MedLinguaAI (1).zip"
+          rm -rf extracted-files/**/.git  # REMOVE the embedded Git repo
+          mv extracted-files/* ./
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Commit and push
+        run: |
+          git add .
+          git commit -m "Unzipped files and removed embedded repo"
+          git push
