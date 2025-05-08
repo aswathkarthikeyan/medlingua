@@ -1,0 +1,30 @@
+name: Unzip and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Unzip MedLinguaAI (1).zip
+        run: |
+          unzip "MedLinguaAI (1).zip" -d extracted-files/
+          git add extracted-files
+          git commit -m "Extract ZIP content"
+          git push origin main
+
+  deploy:
+    needs: unzip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Netlify
+        uses: netlify/actions/setup-netlify-cli@v1
+        with:
+          netlify_auth_token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          site_id: ${{ secrets.NETLIFY_SITE_ID }}
